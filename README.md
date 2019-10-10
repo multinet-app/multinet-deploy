@@ -15,7 +15,7 @@ To encrypt new file on commit you need to edit the .gitattributes file. The synt
 super-secret.txt filter=git-crypt diff=git-crypt
 ```
 
-The file will be encrypted when you commit and you can verify this by going the the github page and clicking on the file. You should see "View raw" when you get to the page showing that the file is a binary file and cannot be read by github (this strategy doesn't work for files that are already binaries). You can take this one step further by downloading the file and ensuring that the data is definitely encrypted.
+The file will be encrypted when you commit and you can verify this several ways. The first is by running `git-crypt lock` and trying to open your file. It should complain that the file is a binary. The second way of checking is on github itself. First, go to the github page and click on the file. You should see "View raw" when you get to the page showing that the file is a binary file and cannot be read by github (this strategy doesn't work for files that are already binaries). You can take this one step further by downloading the file and ensuring that the data is definitely encrypted.
 
 ## Webhooks
 This repo contains code that can run a webhook server on the main Multinet instance. Should you need to modify the code, the server lives outside the docker container ecosystem since it needs to run shell scripts. Currently, the server is running in a tmux session but I'm planning to move it to a system service with a file defined in this folder. If the file exists then the service will also exist. If you need to know where the endpoints are, look inside the nginx/config/nginx.conf file. 
