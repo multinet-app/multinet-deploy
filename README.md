@@ -7,7 +7,7 @@ This repository holds all the deployment code for the Multinet ecosystem.
 ### Decrypting
 As a security precaution, there are several files that are encrypted inside this repository. Our encryption strategy uses [git-crypt](https://github.com/AGWA/git-crypt) to secure certain files that include API keys or other secrets. Please reference the git-crypt repository for installation instructions. Once you have git-crypt installed, you'll need our key to unlock the encrypted files; the key is called `deploy.key` and can be obtained from either Jack or Roni. Please transmit this key securely, using an application like [magic-wormhole](https://github.com/warner/magic-wormhole) or scp. Place the key inside the multinet-deploy folder and then run `git-crypt unlock deploy.key` to decrypt the files in your local repository and make them runnable.
 
-**NOTE**: Please do not rename the key and leave it the multinet-deploy directory as you'd risk pushing it up to github. 
+**NOTE**: Please do not rename the key and leave it the multinet-deploy directory as you'd risk pushing it up to github and keys cannot easily be rotated. See [here](https://github.com/AGWA/git-crypt/issues/47#issuecomment-492939759) if the worst does happen. 
 
 ### Encrypting
 To encrypt new file on commit you need to edit the .gitattributes file. The syntax for adding a file named "super-secret.txt" to the .gitattribures file is: 
