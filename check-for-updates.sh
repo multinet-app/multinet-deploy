@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add an option to let us parse the .env
+set +H
+
 # Move to directory
 cd /home/ec2-user/multinet-deploy/
 
