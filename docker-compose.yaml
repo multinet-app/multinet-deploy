@@ -40,6 +40,12 @@ services:
     network_mode: "host"
 
 
+  view-adjmatrix:
+    build: ./view-adjmatrix/
+    container_name: view-adjmatrix
+    network_mode: "host"
+
+
   view-nodelink:
     build: ./view-nodelink/
     container_name: view-nodelink
