@@ -30,12 +30,12 @@ http.createServer(function(request, response) {
                     response.write("Received a " + data.action + " request from the " + repo + " repository. This is not supported since the containers should only rebuild on a close.");
                     response.end();
                 }
+            } else {
+                // Respond with not authorized
+                response.writeHead(400, { 'Content-type': 'text/html' });
+                response.write('Incorrect auth token.');
+                response.end();
             }
-        } else {
-            // Respond with not authorized
-            response.writeHead(400, { 'Content-type': 'text/html' });
-            response.write('Incorrect auth token.');
-            response.end();
         }
 
     })
