@@ -1,18 +1,19 @@
+const secret = process.env.WEBHOOK_SECRET
+
 const http = require('http')
 const exec = require("child_process").exec
 const crypto = require("crypto")
 
-const secret = process.env.WEBHOOK_SECRET
-
 http.createServer(function(request, response) {
     request.on('data', function(chunk) {
+        // Get make sure the signature matches our secret
+        let sig = "sha1=" + crypto.createHmac('sha1', secret).update(chunk.toString()).digest('hex');
+
         // Get the data that came in and grab a couple things we need
         data = JSON.parse(chunk.toString())
         repo = data.repository.name
         action = data.action
 
-        // Get make sure the signature matches our secret
-        let sig = "sha1=" + crypto.createHmac('sha1', secret).update(chunk.toString()).digest('hex');
         if (request.headers['x-hub-signature']) {
             if (crypto.timingSafeEqual(Buffer.from(request.headers['x-hub-signature']), Buffer.from(sig))) {
                 // Check what type of action we're getting
