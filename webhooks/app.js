@@ -16,7 +16,7 @@ http.createServer(function(request, response) {
         if (request.headers['x-hub-signature']) {
             if (crypto.timingSafeEqual(Buffer.from(request.headers['x-hub-signature']), Buffer.from(sig))) {
                 // Check what type of action we're getting
-                if (action = "close") {
+                if (action = "closed") {
                     // Call the script
                     exec("/home/ec2-user/multinet-deploy/check-for-updates.sh " + repo)
 
