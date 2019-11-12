@@ -19,6 +19,8 @@ services:
 
   arangodb:
     image: arangodb/arangodb:3.4.3
+    command: >
+      sh -c "apk add curl && arangod"
     container_name: arangodb
     environment:
       - ARANGO_ROOT_PASSWORD=${ARANGO_PASSWORD}
@@ -26,12 +28,12 @@ services:
       - "${ARANGO_DATA}:/var/lib/arangodb3"
       - "${ARANGO_DATA_APPS}:/var/lib/arangodb-apps"
     network_mode: "host"
-    # healthcheck:
-    #   test: curl --fail -s http://localhost:8529/ || exit 1
-    #   interval: 2m
-    #   timeout: 10s
-    #   retries: 3
-    # restart: on-failure
+    healthcheck:
+      test: curl -I -X GET http://localhost:8529/_db/_system/_admin/aardvark/index.html#login || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    restart: on-failure
 
 
   multinet-server:
