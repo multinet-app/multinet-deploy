@@ -26,29 +26,58 @@ services:
       - "${ARANGO_DATA}:/var/lib/arangodb3"
       - "${ARANGO_DATA_APPS}:/var/lib/arangodb-apps"
     network_mode: "host"
+    # healthcheck:
+    #   test: curl --fail -s http://localhost:8529/ || exit 1
+    #   interval: 2m
+    #   timeout: 10s
+    #   retries: 3
+    # restart: on-failure
 
 
   multinet-server:
     build: ./multinet-server/
     container_name: multinet-server
     network_mode: "host"
+    healthcheck:
+      test: curl --fail -s http://localhost:5000/ || exit 1
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    restart: on-failure
 
   
   multinet-client:
     build: ./multinet-client/
     container_name: multinet-client
     network_mode: "host"
-
-
-  view-adjmatrix:
-    build: ./view-adjmatrix/
-    container_name: view-adjmatrix
-    network_mode: "host"
+    healthcheck:
+      test: curl --fail -s http://localhost:8080/ || exit 1
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    restart: on-failure
 
 
   view-nodelink:
     build: ./view-nodelink/
     container_name: view-nodelink
     network_mode: "host"
+    healthcheck:
+      test: curl --fail -s http://localhost:8081/ || exit 1
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    restart: on-failure
 
-  
+
+  view-adjmatrix:
+    build: ./view-adjmatrix/
+    container_name: view-adjmatrix
+    network_mode: "host"
+    healthcheck:
+      test: curl --fail -s http://localhost:8082/ || exit 1
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+    
