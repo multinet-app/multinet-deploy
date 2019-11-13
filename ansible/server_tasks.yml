@@ -17,9 +17,34 @@
 - name: Clone multinet server repository
   git:
     repo: https://github.com/multinet-app/multinet.git
+    version: uwsgi
     dest: "{{ multinet_server_path }}"
 
 - name: Install python server dependencies
   command: pipenv install --python /usr/bin/python3
   args:
     chdir: "{{ multinet_server_path }}"
+
+- name: Install service (systemd)
+  template:
+    src: "multinet.service.j2"
+    dest: "/etc/systemd/system/multinet.service"
+  become: true
+
+- name: Reload units (systemd)
+  systemd:
+    name: multinet
+    daemon_reload: true
+  become: true
+
+- name: (Re)start service (systemd)
+  systemd:
+    name: multinet
+    state: restarted
+  become: true
+
+- name: Enable/Disable multinet service on boot
+  service:
+    name: multinet
+    enabled: true
+  become: true
