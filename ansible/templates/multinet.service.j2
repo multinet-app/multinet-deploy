@@ -7,8 +7,10 @@ After=network.target
 Type=simple
 User={{ ansible_user_id }}
 Group={{ ansible_user_id }}
-WorkingDirectory={{ multinet_server_path }}/multinet
-ExecStart={{ ansible_env.HOME }}/.local/bin/uwsgi --ini {{ multinet_server_path }}/multinet/app.ini
+WorkingDirectory={{ multinet_server_path }}
+ExecStart=/usr/local/bin/pipenv run uwsgi --ini multinet/app.ini
+ExecStop=/bin/kill -INT $MAINPID
+KillSignal=SIGQUIT
 
 [Install]
 WantedBy=multi-user.target
