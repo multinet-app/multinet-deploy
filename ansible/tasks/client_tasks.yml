@@ -1,0 +1,9 @@
+- name: Install multinet client side app dependencies
+  yarn:
+    path: "{{ multinet_server_path }}/client"
+
+- name: Build multinet client side
+  command: yarn run build
+  args:
+    chdir: "{{ multinet_server_path }}/client"
+

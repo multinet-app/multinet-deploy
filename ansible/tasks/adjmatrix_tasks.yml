@@ -1,0 +1,8 @@
+- name: Clone adjmatrix repository
+  git:
+    repo: https://github.com/multinet-app/view-adjmatrix.git
+    dest: "{{ adjmatrix_client_path }}"
+
+- name: Install adjmatrix dependencies
+  yarn:
+    path: "{{ adjmatrix_client_path }}"
