@@ -7,23 +7,12 @@
     update_cache: true
   become: true
 
-- name: Install python dependencies
-  pip:
-    name:
-      - flask
-      - uwsgi
-    executable: /usr/bin/pip3
-
 - name: Clone multinet server repository
   git:
     repo: https://github.com/multinet-app/multinet.git
     version: uwsgi
+    force: true
     dest: "{{ multinet_server_path }}"
-
-- name: Install python server dependencies
-  command: pipenv install --python /usr/bin/python3
-  args:
-    chdir: "{{ multinet_server_path }}"
 
 - name: Install service (systemd)
   template:
@@ -36,6 +25,17 @@
     name: multinet
     daemon_reload: true
   become: true
+
+- name: Stop service (systemd)
+  systemd:
+    name: multinet
+    state: stopped
+  become: true
+
+- name: Install python server dependencies
+  command: pipenv install --python /usr/bin/python3
+  args:
+    chdir: "{{ multinet_server_path }}"
 
 - name: (Re)start service (systemd)
   systemd:
