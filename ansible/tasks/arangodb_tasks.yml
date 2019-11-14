@@ -21,6 +21,16 @@
     name: arangodb3=3.5.2-1
   become: true
 
+- name: Stop arangodb service
+  systemd:
+    name: arangodb3
+    state: stopped
+  become: true
+
+- name: Overwrite the default arangodb password
+  shell: ARANGODB_DEFAULT_ROOT_PASSWORD={{ arangodb_password }} arango-secure-installation
+  become: true
+
 - name: Start arangodb service
   systemd:
     name: arangodb3

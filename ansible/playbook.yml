@@ -7,6 +7,7 @@
     multinet_server_path: "{{ ansible_env.HOME }}/multinet"
     adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
     nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
+    arangodb_password: "letmein"
 
   roles:
     - role: geerlingguy.nodejs
