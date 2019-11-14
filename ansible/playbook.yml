@@ -5,14 +5,30 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     multinet_server_path: "{{ ansible_env.HOME }}/multinet"
+    adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
+    nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
 
   roles:
-    - role: oefenweb.yarn
+    - role: geerlingguy.nodejs
       become: true
-    - role: geerlingguy.nginx
+    - role: oefenweb.yarn
       become: true
     - role: leesoh.pipenv
       become: true
+    - role: geerlingguy.nginx
+      vars:
+        nginx_vhosts:
+          - listen: "5000"
+            server_name: "example.com"
+            extra_parameters: |
+              location / {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+      become: true
 
   tasks:
-    - include_tasks: server_tasks.yml
+    - include_tasks: tasks/server_tasks.yml
+    - include_tasks: tasks/client_tasks.yml
+    - include_tasks: tasks/nodelink_tasks.yml
+    - include_tasks: tasks/adjmatrix_tasks.yml
