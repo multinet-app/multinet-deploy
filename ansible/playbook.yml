@@ -37,6 +37,7 @@
       become: true
 
   tasks:
+    - include_tasks: tasks/arangodb_tasks.yml
     - include_tasks: tasks/server_tasks.yml
     - include_tasks: tasks/client_tasks.yml
     - include_tasks: tasks/nodelink_tasks.yml
