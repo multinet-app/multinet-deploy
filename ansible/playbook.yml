@@ -30,13 +30,16 @@
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
               location /apidocs/ {
-                proxy_pass http://127.0.0.1:5000/apidocs/;
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
               location /flasgger_static/ {
-                proxy_pass http://127.0.0.1:5000/flasgger_static/;
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
               location /apispec_1.json {
-                proxy_pass http://127.0.0.1:5000/apispec_1.json;
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
               location /nodelink {
                 alias {{ nodelink_client_path }}/src;
