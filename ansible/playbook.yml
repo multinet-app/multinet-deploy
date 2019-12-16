@@ -22,18 +22,18 @@
           - listen: "8080"
             server_name: "example.com"
             extra_parameters: |
-              location / {
-                root {{ multinet_server_path }}/client/dist;
-              }
-              location /api {
-                include uwsgi_params;
-                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
-              }
               location /nodelink {
                 alias {{ nodelink_client_path }}/src;
               }
               location /adjmatrix {
                 alias {{ adjmatrix_client_path }}/src;
+              }
+              location /api {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location / {
+                root {{ multinet_server_path }}/client/dist;
               }
       become: true
 
