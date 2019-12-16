@@ -29,6 +29,18 @@
                 include uwsgi_params;
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
+              location /apidocs {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location /flasgger_static {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location /apispec_1.json {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
               location /nodelink {
                 alias {{ nodelink_client_path }}/src;
               }
