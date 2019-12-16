@@ -19,7 +19,7 @@
     - role: geerlingguy.nginx
       vars:
         nginx_vhosts:
-          - listen: "8080"
+          - listen: "80"
             server_name: "example.com"
             extra_parameters: |
               location /nodelink {
