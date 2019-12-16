@@ -29,11 +29,11 @@
                 include uwsgi_params;
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
-              location /apidocs/ {
+              location /apidocs {
                 include uwsgi_params;
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
-              location /flasgger_static/ {
+              location /flasgger_static {
                 include uwsgi_params;
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
