@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  remote_user: root
+  remote_user: ubuntu
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -19,11 +19,14 @@
     - role: geerlingguy.nginx
       vars:
         nginx_vhosts:
-          - listen: "8080"
+          - listen: "80"
             server_name: "example.com"
             extra_parameters: |
-              location / {
-                root {{ multinet_server_path }}/client/dist;
+              location /nodelink {
+                alias {{ nodelink_client_path }}/src;
+              }
+              location /adjmatrix {
+                alias {{ adjmatrix_client_path }}/src;
               }
               location /api {
                 include uwsgi_params;
@@ -41,11 +44,8 @@
                 include uwsgi_params;
                 uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
               }
-              location /nodelink {
-                alias {{ nodelink_client_path }}/src;
-              }
-              location /adjmatrix {
-                alias {{ adjmatrix_client_path }}/src;
+              location / {
+                root {{ multinet_server_path }}/client/dist;
               }
       become: true
 
