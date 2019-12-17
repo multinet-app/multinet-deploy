@@ -32,6 +32,8 @@
         state: touch
       become: true
 
+    nodelink_public_path: "nodelink"
+
   roles:
     - role: geerlingguy.nodejs
       become: true
@@ -45,8 +47,8 @@
           - listen: "80 default_server"
             server_name: "_"
             extra_parameters: |
-              location /nodelink {
-                alias {{ nodelink_client_path }}/src;
+              location /{{nodelink_public_path}} {
+                alias {{ nodelink_client_path }}/dist;
               }
               location /adjmatrix {
                 alias {{ adjmatrix_client_path }}/src;

@@ -8,3 +8,11 @@
   yarn:
     path: "{{ nodelink_client_path }}"
   when: nodelink_git.changed
+
+- name: Build nodelink app
+  command: yarn run build
+  args:
+    chdir: "{{ nodelink_client_path }}"
+  environment:
+    PUBLIC_PATH: "/{{nodelink_public_path}}/"
+  when: nodelink_git.changed
