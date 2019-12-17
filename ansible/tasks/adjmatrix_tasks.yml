@@ -2,7 +2,9 @@
   git:
     repo: https://github.com/multinet-app/view-adjmatrix.git
     dest: "{{ adjmatrix_client_path }}"
+  register: adjmatrix_git
 
 - name: Install adjmatrix dependencies
   yarn:
     path: "{{ adjmatrix_client_path }}"
+  when: adjmatrix_git.changed
