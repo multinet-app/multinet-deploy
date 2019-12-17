@@ -2,10 +2,12 @@
   git:
     repo: https://github.com/multinet-app/view-nodelink.git
     dest: "{{ nodelink_client_path }}"
+  register: nodelink_git
 
 - name: Install nodelink dependencies
   yarn:
     path: "{{ nodelink_client_path }}"
+  when: nodelink_git.changed
 
 - name: Build nodelink app
   command: yarn run build
@@ -13,3 +15,4 @@
     chdir: "{{ nodelink_client_path }}"
   environment:
     PUBLIC_PATH: "/{{nodelink_public_path}}/"
+  when: nodelink_git.changed
