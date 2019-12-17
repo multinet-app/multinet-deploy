@@ -19,8 +19,8 @@
     - role: geerlingguy.nginx
       vars:
         nginx_vhosts:
-          - listen: "80"
-            server_name: "example.com"
+          - listen: "80 default_server"
+            server_name: "_"
             extra_parameters: |
               location /nodelink {
                 alias {{ nodelink_client_path }}/src;
@@ -47,6 +47,7 @@
               location / {
                 root {{ multinet_server_path }}/client/dist;
               }
+      nginx_remove_default_vhost: true
       become: true
 
   tasks:
