@@ -32,13 +32,6 @@
         state: touch
       become: true
 
-  # Remove the lockfile when finished.
-  post_tasks:
-    - file:
-        path: "{{lockfile_path}}"
-        state: absent
-      become: true
-
   roles:
     - role: geerlingguy.nodejs
       become: true
@@ -81,8 +74,15 @@
       become: true
 
   tasks:
-    - include_tasks: tasks/arangodb_tasks.yml
-    - include_tasks: tasks/server_tasks.yml
-    - include_tasks: tasks/client_tasks.yml
-    - include_tasks: tasks/nodelink_tasks.yml
-    - include_tasks: tasks/adjmatrix_tasks.yml
+    - block:
+        - include_tasks: tasks/arangodb_tasks.yml
+        - include_tasks: tasks/server_tasks.yml
+        - include_tasks: tasks/client_tasks.yml
+        - include_tasks: tasks/nodelink_tasks.yml
+        - include_tasks: tasks/adjmatrix_tasks.yml
+      always:
+        # Remove the lockfile when finished, or on error.
+        - file:
+            path: "{{lockfile_path}}"
+            state: absent
+          become: true
