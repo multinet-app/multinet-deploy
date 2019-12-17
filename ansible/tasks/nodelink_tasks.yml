@@ -11,4 +11,5 @@
   command: yarn run build
   args:
     chdir: "{{ nodelink_client_path }}"
-
+  environment:
+    PUBLIC_PATH: "/nodelink/"
