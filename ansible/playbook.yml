@@ -23,7 +23,7 @@
             server_name: "_"
             extra_parameters: |
               location /nodelink {
-                alias {{ nodelink_client_path }}/src;
+                alias {{ nodelink_client_path }}/dist;
               }
               location /adjmatrix {
                 alias {{ adjmatrix_client_path }}/src;

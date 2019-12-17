@@ -6,3 +6,9 @@
 - name: Install nodelink dependencies
   yarn:
     path: "{{ nodelink_client_path }}"
+
+- name: Build nodelink app
+  command: yarn run build
+  args:
+    chdir: "{{ nodelink_client_path }}"
+
