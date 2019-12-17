@@ -8,6 +8,36 @@
     adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
     nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
     arangodb_password: "letmein"
+    lockfile_path: /tmp/ansible-playbook.lock
+    force_ignore_lock: false
+
+  # Abort if a lockfile is present; otherwise create the file.
+  pre_tasks:
+    - stat:
+        path: "{{lockfile_path}}"
+      register: lockfile
+
+    - fail:
+        msg: "lockfile found; another ansible process might be running?"
+      when: lockfile.stat.exists|bool and not force_ignore_lock|bool
+
+    - file:
+        path: "{{lockfile_path}}"
+        state: absent
+        become: true
+      when: "{{force_ignore_lock}}"
+
+    - file:
+        path: "{{lockfile_path}}"
+        state: touch
+      become: true
+
+  # Remove the lockfile when finished.
+  post_tasks:
+    - file:
+        path: "{{lockfile_path}}"
+        state: absent
+      become: true
 
   roles:
     - role: geerlingguy.nodejs
