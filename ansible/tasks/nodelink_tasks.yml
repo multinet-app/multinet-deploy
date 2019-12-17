@@ -2,7 +2,9 @@
   git:
     repo: https://github.com/multinet-app/view-nodelink.git
     dest: "{{ nodelink_client_path }}"
+  register: nodelink_git
 
 - name: Install nodelink dependencies
   yarn:
     path: "{{ nodelink_client_path }}"
+  when: nodelink_git.changed

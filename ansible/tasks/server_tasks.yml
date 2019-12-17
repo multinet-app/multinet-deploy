@@ -12,6 +12,7 @@
     repo: https://github.com/multinet-app/multinet.git
     force: true
     dest: "{{ multinet_server_path }}"
+  register: multinet_git
 
 - name: Install service (systemd)
   template:
@@ -35,6 +36,7 @@
   command: pipenv install --python /usr/bin/python3
   args:
     chdir: "{{ multinet_server_path }}"
+  when: multinet_git.changed
 
 - name: (Re)start service (systemd)
   systemd:
