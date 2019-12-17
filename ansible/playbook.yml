@@ -9,6 +9,8 @@
     nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
     arangodb_password: "letmein"
 
+    nodelink_public_path: "nodelink"
+
   roles:
     - role: geerlingguy.nodejs
       become: true
@@ -22,7 +24,7 @@
           - listen: "80 default_server"
             server_name: "_"
             extra_parameters: |
-              location /nodelink {
+              location /{{nodelink_public_path}} {
                 alias {{ nodelink_client_path }}/dist;
               }
               location /adjmatrix {
