@@ -16,7 +16,7 @@ jobs:
       - name: Install ansible roles
         run: ansible-galaxy install -r /home/runner/work/multinet-deploy/multinet-deploy/ansible/requirements.yml
 
-      - name: Add server to known hosts
+      - name: Add EC2 server to known hosts
         run:  touch ~/.ssh/known_hosts && ssh-keyscan 18.217.253.44 >> ~/.ssh/known_hosts
 
       - name: Deploy to testing environment
