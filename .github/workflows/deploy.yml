@@ -13,5 +13,8 @@ jobs:
         run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo "${{secrets.TESTING_PEM}}" > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
           
       - uses: actions/checkout@v2
+      - name: Install ansible roles
+        run: ansible-galaxy install -r requirements.yml
+
       - name: Deploy to testing environment
-        run: ls ~/ && ansible-playbook -i 18.217.253.44, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
+        run: ansible-playbook -i 18.217.253.44, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
