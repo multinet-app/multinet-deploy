@@ -1,0 +1,10 @@
+name: Deploy multinet
+on: [repository_dispatch, push]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump event
+        run: jq . $GITHUB_EVENT_PATH
