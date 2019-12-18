@@ -9,7 +9,7 @@ jobs:
       - name: Dump event
         run: jq . $GITHUB_EVENT_PATH
 
-      - name: Make ssh key
+      - name: Save private ssh key to file
         run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo "${{secrets.TESTING_PEM}}" > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
           
       - uses: actions/checkout@v2
