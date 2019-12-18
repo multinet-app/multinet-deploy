@@ -16,5 +16,8 @@ jobs:
       - name: Install ansible roles
         run: ansible-galaxy install -r /home/runner/work/multinet-deploy/multinet-deploy/ansible/requirements.yml
 
+      - name: Add server to known hosts
+        run:  touch ~/.ssh/known_hosts && ssh-keyscan 18.217.253.44 >> ~/.ssh/known_hosts
+
       - name: Deploy to testing environment
-        run: ansible-playbook -i 18.217.253.44, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
+        run: ansible-playbook -i 18.217.253.44, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem'"
