@@ -10,7 +10,7 @@ jobs:
         run: jq . $GITHUB_EVENT_PATH
 
       - name: Make ssh key
-        run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo ${{secrets.TESTING_PEM}} > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
+        run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo "${{secrets.TESTING_PEM}}" > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
           
       - name: Deploy to testing environment
         run: ansible-playbook -i 18.217.253.44, multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
