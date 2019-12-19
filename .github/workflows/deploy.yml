@@ -9,14 +9,14 @@ jobs:
       - name: Dump event
         run: jq . $GITHUB_EVENT_PATH
 
-      - name: Make ssh key
+      - name: Save private ssh key to file
         run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo "${{secrets.TESTING_PEM}}" > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
           
       - uses: actions/checkout@v2
       - name: Install ansible roles
         run: ansible-galaxy install -r /home/runner/work/multinet-deploy/multinet-deploy/ansible/requirements.yml
 
-      - name: Add server to known hosts
+      - name: Add EC2 server to known hosts
         run:  touch ~/.ssh/known_hosts && ssh-keyscan 18.217.253.44 >> ~/.ssh/known_hosts
 
       - name: Create security group for this runner
