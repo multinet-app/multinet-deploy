@@ -21,5 +21,11 @@ fi
 # Add the github actions ip to the security group
 aws ec2 authorize-security-group-ingress --group-id $group_id --protocol tcp --port 22 --cidr $actions_ip"/32"
 
-# Add the security group to the instance
-aws ec2 modify-instance-attribute --instance-id $AWS_INSTANCE_ID --groups "$group_id" "sg-0c6c1ccf379af096d" "sg-00a5547f58c373231" "sg-0bce9fa27bfbfc695"
+# Query the instances current security groups
+current_groups=$(aws ec2 describe-security-groups --group-ids $(aws ec2 describe-instances --instance-id $id --query "Reservations[].Instances[].SecurityGroups[].GroupId[]" --output text) --query "SecurityGroups[].GroupId[]")
+
+# Remove all characters we don't want from the current groups
+current_groups=$(echo $current_groups | tr -d '""' | tr -d '[' | tr -d ']' | tr -d ',')
+
+# Reset the security groups adding in the new one
+aws ec2 modify-instance-attribute --instance-id $AWS_INSTANCE_ID --groups $group_id $current_groups
