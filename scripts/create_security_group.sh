@@ -22,10 +22,10 @@ fi
 aws ec2 authorize-security-group-ingress --group-id $group_id --protocol tcp --port 22 --cidr $actions_ip"/32"
 
 # Query the instances current security groups
-current_groups=$(aws ec2 describe-security-groups --group-ids $(aws ec2 describe-instances --instance-id $id --query "Reservations[].Instances[].SecurityGroups[].GroupId[]" --output text) --query "SecurityGroups[].GroupId[]")
+original_groups=$(aws ec2 describe-security-groups --group-ids $(aws ec2 describe-instances --instance-id $id --query "Reservations[].Instances[].SecurityGroups[].GroupId[]" --output text) --query "SecurityGroups[].GroupId[]")
 
 # Remove all characters we don't want from the current groups
-current_groups=$(echo $current_groups | tr -d '""' | tr -d '[' | tr -d ']' | tr -d ',')
+original_groups=$(echo $original_groups | tr -d '""' | tr -d '[' | tr -d ']' | tr -d ',')
 
 # Reset the security groups adding in the new one
-aws ec2 modify-instance-attribute --instance-id $AWS_INSTANCE_ID --groups $group_id $current_groups
+aws ec2 modify-instance-attribute --instance-id $AWS_INSTANCE_ID --groups $group_id $original_groups
