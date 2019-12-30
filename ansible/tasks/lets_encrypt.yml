@@ -5,7 +5,7 @@
   become: true
 
 - name: echo CERT_ADMIN_EMAIL
-  shell: echo {{CERT_ADMIN_EMAIL}}
+  shell: echo {{CERT_ADMIN_EMAIL}} > /home/ubuntu/test.txt
 
 - name: Request a cert
   shell: certbot --nginx -m {{ CERT_ADMIN_EMAIL }} -d multinet.app --agree-tos -n
