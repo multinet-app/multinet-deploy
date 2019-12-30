@@ -8,6 +8,8 @@
   shell: certbot --nginx -m {{ CERT_ADMIN_EMAIL }} -d multinet.app --agree-tos -n
   become: true
   creates: /etc/letsencrypt/live/multinet.app/fullchain.pem
+  vars:
+    CERT_ADMIN_EMAIL: "{{ lookup('env','CERT_ADMIN_EMAIL') }}"
 
 - name: Reload nginx
   systemd:
