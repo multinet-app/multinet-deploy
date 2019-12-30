@@ -6,8 +6,9 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Dump event
-        run: jq . $GITHUB_EVENT_PATH
+      - name: Echo the client name
+        run: echo {{github.event.client_payload.repo}}
+        if: github.event.action == 'build_application'
 
       - name: Set IP/domain for the server
         run: echo "::set-env name=SERVER_IP::18.217.253.44"
@@ -28,5 +29,5 @@ jobs:
       - name: Deploy to testing environment
         run: ansible-playbook -i ${SERVER_IP}, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
 
-      - name: Create security group for this runner
+      - name: Destroy security group for this runner
         run: chmod +x /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh && AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}} AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}} AWS_INSTANCE_ID=${{secrets.AWS_INSTANCE_ID}} AWS_VPC_ID=${{secrets.AWS_VPC_ID}} AWS_DEFAULT_REGION=us-east-2  /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh
