@@ -11,6 +11,7 @@
     arangodb_password: "letmein"
     lockfile_path: /tmp/ansible-playbook.lock
     force_ignore_lock: false
+    CERT_ADMIN_EMAIL: {{CERT_ADMIN_EMAIL}}
 
   # Abort if a lockfile is present; otherwise create the file.
   pre_tasks:
