@@ -4,6 +4,9 @@
     update_cache: true
   become: true
 
+- name: echo CERT_ADMIN_EMAIL
+  shell: echo {{CERT_ADMIN_EMAIL}}
+
 - name: Request a cert
   shell: certbot --nginx -m {{ CERT_ADMIN_EMAIL }} -d multinet.app --agree-tos -n
   become: true
