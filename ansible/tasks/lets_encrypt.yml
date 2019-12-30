@@ -6,16 +6,12 @@
 
 - name: echo CERT_ADMIN_EMAIL
   shell: echo {{CERT_ADMIN_EMAIL}}
-  vars:
-    CERT_ADMIN_EMAIL: "{{ lookup('env','CERT_ADMIN_EMAIL') }}"
 
 - name: Request a cert
   shell: certbot --nginx -m {{ CERT_ADMIN_EMAIL }} -d multinet.app --agree-tos -n
   become: true
   args:
     creates: "/etc/letsencrypt/live/multinet.app/fullchain.pem"
-  vars:
-    CERT_ADMIN_EMAIL: "{{ lookup('env','CERT_ADMIN_EMAIL') }}"
 
 - name: Reload nginx
   systemd:
