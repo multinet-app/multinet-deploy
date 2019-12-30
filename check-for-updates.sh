@@ -26,11 +26,3 @@ docker-compose up -d
 fi
 
 echo $REPO" run successful "$(date) >> $LOCATION/whook.log
-
-# mailbody="Testmail via bash script"
-# echo "From: info@myserver.test" > /tmp/mailtest
-# echo "To: jwilburn@sci.utah.edu" >> /tmp/mailtest
-# echo "Subject: Mailtest subject" >> /tmp/mailtest
-# echo "" >> /tmp/mailtest
-# echo $mailbody >> /tmp/mailtest
-# cat /tmp/mailtest | /usr/sbin/sendmail -t

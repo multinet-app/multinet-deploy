@@ -6,9 +6,8 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Echo the client name
-        run: echo {{github.event.client_payload.repo}}
-        if: github.event.action == 'build_application'
+      - name: Dump event
+        run: jq . $GITHUB_EVENT_PATH
 
       - name: Set IP/domain for the server
         run: echo "::set-env name=SERVER_IP::18.217.253.44"

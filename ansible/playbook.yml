@@ -43,8 +43,10 @@
     - role: geerlingguy.nginx
       vars:
         nginx_vhosts:
-          - listen: "80 default_server"
-            server_name: "_"
+          - listen: "443 ssl http2"
+            server_name: "multinet.app"
+            state: "present"
+            filename: "multinet.app.conf"
             extra_parameters: |
               location /{{nodelink_public_path}} {
                 alias {{ nodelink_client_path }}/dist;
