@@ -10,7 +10,7 @@
     nodelink_public_path: "nodelink"
     arangodb_password: "letmein"
     lockfile_path: /tmp/ansible-playbook.lock
-    force_ignore_lock: true
+    force_ignore_lock: false
 
   # Abort if a lockfile is present; otherwise create the file.
   pre_tasks:
