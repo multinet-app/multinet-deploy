@@ -1,0 +1,5 @@
+- name: Install certbot
+  apt:
+    name: certbot
+    update_cache: true
+  become: true

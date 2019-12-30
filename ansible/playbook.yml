@@ -76,6 +76,7 @@
 
   tasks:
     - block:
+        - include_tasks: tasks/lets_encrypt.yml
         - include_tasks: tasks/arangodb_tasks.yml
         - include_tasks: tasks/server_tasks.yml
         - include_tasks: tasks/client_tasks.yml
