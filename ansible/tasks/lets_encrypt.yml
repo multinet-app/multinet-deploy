@@ -1,29 +1,29 @@
+# Sets up the let's encrypt certs only on first provision (the certbot steps cert step doesn't run if the cert exists)
+
+# Install certbot and pyth
 - name: Install certbot
   apt:
-    name: [certbot, python-certbot-nginx]
+    name: [certbot]
     update_cache: true
   become: true
 
+# Stop nginx since it runs on port 80 and we need to validate that certbot is running on this server using port 80
 - name: Stop nginx service
   systemd:
     name: nginx
     state: stopped
   become: true
 
+# Launch a standalone server that can validate the let's encrypt challenge
 - name: Request a cert
   shell: certbot certonly -m {{ cert_admin_email }} -d multinet.app --agree-tos -n --standalone
   become: true
   args:
     creates: "/etc/letsencrypt/live/multinet.app/fullchain.pem"
 
+# Restart the nginx server
 - name: Start nginx service
   systemd:
     name: nginx
     state: started
-  become: true
-
-- name: Reload nginx
-  systemd:
-    name: nginx
-    state: restarted
   become: true
