@@ -1,9 +1,8 @@
 # Sets up the let's encrypt certs only on first provision (the certbot steps cert step doesn't run if the cert exists)
 
-# Install certbot and pyth
 - name: Install certbot
   apt:
-    name: [certbot]
+    name: certbot
     update_cache: true
   become: true
 
