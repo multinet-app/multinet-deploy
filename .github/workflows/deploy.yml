@@ -9,6 +9,9 @@ jobs:
       - name: Dump event
         run: jq . $GITHUB_EVENT_PATH
 
+      - name: Set IP/domain for the server
+        run: echo "::set-env name=SERVER_IP::multinet.app"
+
       - name: Save private ssh key to file
         run: mkdir -p ~/.ssh && touch ~/.ssh/testing.pem && echo "${{secrets.TESTING_PEM}}" > ~/.ssh/testing.pem && chmod 400 ~/.ssh/testing.pem
           
@@ -20,10 +23,10 @@ jobs:
         run: chmod +x /home/runner/work/multinet-deploy/multinet-deploy/scripts/create_security_group.sh && AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}} AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}} AWS_INSTANCE_ID=${{secrets.AWS_INSTANCE_ID}} AWS_VPC_ID=${{secrets.AWS_VPC_ID}} AWS_DEFAULT_REGION=us-east-2 /home/runner/work/multinet-deploy/multinet-deploy/scripts/create_security_group.sh
 
       - name: Add EC2 server to known hosts
-        run:  touch ~/.ssh/known_hosts && ssh-keyscan 18.217.253.44 >> ~/.ssh/known_hosts
+        run:  touch ~/.ssh/known_hosts && ssh-keyscan ${SERVER_IP} >> ~/.ssh/known_hosts
 
       - name: Deploy to testing environment
-        run: ansible-playbook -i 18.217.253.44, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem"
+        run: ansible-playbook -i ${SERVER_IP}, /home/runner/work/multinet-deploy/multinet-deploy/ansible/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem" --extra-vars="cert_admin_email=${{secrets.CERT_ADMIN_EMAIL}}"
 
-      - name: Create security group for this runner
+      - name: Destroy security group for this runner
         run: chmod +x /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh && AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}} AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}} AWS_INSTANCE_ID=${{secrets.AWS_INSTANCE_ID}} AWS_VPC_ID=${{secrets.AWS_VPC_ID}} AWS_DEFAULT_REGION=us-east-2  /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh

@@ -1,0 +1,17 @@
+- name: Install certbot
+  apt:
+    name: [certbot, python-certbot-nginx]
+    update_cache: true
+  become: true
+
+- name: Request a cert
+  shell: certbot certonly -m {{ cert_admin_email }} -d multinet.app --agree-tos -n
+  become: true
+  args:
+    creates: "/etc/letsencrypt/live/multinet.app/fullchain.pem"
+
+- name: Reload nginx
+  systemd:
+    name: nginx
+    state: restarted
+  become: true
