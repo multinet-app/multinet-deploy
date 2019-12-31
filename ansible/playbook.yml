@@ -14,9 +14,6 @@
 
   # Abort if a lockfile is present; otherwise create the file.
   pre_tasks:
-    - name: Get ssl certs
-      import_tasks: "tasks/lets_encrypt.yml"
-
     - stat:
         path: "{{lockfile_path}}"
       register: lockfile
@@ -35,6 +32,9 @@
         path: "{{lockfile_path}}"
         state: touch
       become: true
+
+    - name: Get ssl certs
+      import_tasks: "tasks/lets_encrypt.yml"
 
   roles:
     - role: geerlingguy.nodejs
