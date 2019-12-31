@@ -5,7 +5,7 @@
   become: true
 
 - name: Request a cert
-  shell: certbot certonly -m {{ cert_admin_email }} -d multinet.app --agree-tos -n
+  shell: certbot certonly -m {{ cert_admin_email }} -d multinet.app --agree-tos -n --standalone
   become: true
   args:
     creates: "/etc/letsencrypt/live/multinet.app/fullchain.pem"
