@@ -83,6 +83,12 @@
               ssl_protocols TLSv1.2 TLSv1.3;
               ssl_prefer_server_ciphers on;
               ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
+          - listen: "80"
+            server_name: "multinet.app"
+            state: "present"
+            filename: "multinet80.app.conf"
+            extra_parameters: |
+              return 301 https://$host$request_uri;
       nginx_remove_default_vhost: true
       become: true
 
