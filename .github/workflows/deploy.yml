@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-  respository_dispatch:
+  repository_dispatch:
     branches:
       - master
 
