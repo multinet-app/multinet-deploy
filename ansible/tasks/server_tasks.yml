@@ -38,6 +38,12 @@
     chdir: "{{ multinet_server_path }}"
   when: multinet_git.changed
 
+- name: Set up .env file
+  copy:
+    src: "{{ multinet_server_path }}/.env.default"
+    dest: "{{ multinet_server_path }}/.env"
+    remote_src: yes
+
 - name: (Re)start service (systemd)
   systemd:
     name: multinet

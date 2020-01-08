@@ -1,5 +1,10 @@
 name: Deploy multinet
-on: [repository_dispatch, push]
+on:
+  push:
+    branches:
+      - master
+  repository_dispatch:
+    types: [build_application]
 
 jobs:
   deploy:
