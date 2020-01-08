@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - master
-  respository_dispatch
+  respository_dispatch:
+    branches:
+      - master
 
 jobs:
   deploy:
