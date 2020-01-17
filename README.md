@@ -1,38 +1,115 @@
-# Multinet Deploy
+# Readme
 
-## Introduction
-This repository holds all the deployment code for the Multinet ecosystem.
-## Encrypted Files
+Ansible is an open-source software provisioning, configuration management, and application-deployment tool. It makes it very easy to write installation steps as code and running it against EC2 instances, vagrant machines or even your own host.
 
-### Decrypting
-As a security precaution, there are several files that are encrypted inside this repository. Our encryption strategy uses [git-crypt](https://github.com/AGWA/git-crypt) to secure certain files that include API keys or other secrets. Please reference the git-crypt repository for installation instructions. Once you have git-crypt installed, you'll need our key to unlock the encrypted files; the key is called `deploy.key` and can be obtained from either Jack or Roni. Please transmit this key securely, using an application like [magic-wormhole](https://github.com/warner/magic-wormhole) or scp. Place the key inside the multinet-deploy folder and then run `git-crypt unlock deploy.key` to decrypt the files in your local repository and make them runnable.
+### Installing Ansible
+Let's start with installing ansible:
 
-**NOTE**: Please do not rename the key and leave it the multinet-deploy directory as you'd risk pushing it up to github and keys cannot easily be rotated. See [here](https://github.com/AGWA/git-crypt/issues/47#issuecomment-492939759) if the worst does happen. 
+It is recommended that you pip install packages to a virtualenv to keep your system Python clean.
 
-### Encrypting
-To encrypt new file on commit you need to edit the .gitattributes file. The syntax for adding a file named "super-secret.txt" to the .gitattribures file is: 
-```
-super-secret.txt filter=git-crypt diff=git-crypt
+```sh
+pip install ansible
 ```
 
-The file will be encrypted when you commit and you can verify this several ways. The first is by running `git-crypt lock` and trying to open your file. It should complain that the file is a binary. The second way of checking is on github itself. First, go to the github page and click on the file. You should see "View raw" when you get to the page showing that the file is a binary file and cannot be read by github (this strategy doesn't work for files that are already binaries). You can take this one step further by downloading the file and ensuring that the data is definitely encrypted.
+### Vagrant
 
-## Webhooks
-This repo contains code that can run a webhook server on the main Multinet instance. Should you need to modify the code, the server lives outside the docker container ecosystem since it needs to run shell scripts. Currently, the server is running in a tmux session but I'm planning to move it to a system service with a file defined in this folder. If the file exists then the service will also exist. If you need to know where the endpoints are, look inside the nginx/config/nginx.conf file. 
+In order to use it with vagrant simply:
 
-## Docker Containers
-The other apps that run as a part of this project run inside of docker containers. The containers each have a Dockerfile in their respective folders and are orchestrated by the docker-compose script the lives at the directory root. In their current form, the containers are restartable without hiccups and without data loss. Here are some commands you might need to administer the containers:
-
-```
-# Clear out old builds and images not in use
-docker system prune --all -f
-
-# Build from scratch (necessary since docker can't see inside the github repos)
-docker-compose build --no-cache
-
-# Start and stop all containers
-docker-compose up -d
-docker-compose down
+```sh
+vagrant up
 ```
 
-**NOTE**: The main Multinet instance occassionally runs out of hard drive space if you're building a lot of container images. You can clear out past builds with `docker system prune --all -f` or it might make sense to increase the size of the hard drive.
+That will provision an empty vagrant box (practice the ansible playbook we wrote against a vagrant box) and expose port 8080. After the provisioning step is over you can navigate to http://localhost:8080 and you should see your multinet instance. 
+
+If you change something in the playbook and want to re-run you can:
+
+```sh
+vagrant provision
+```
+
+This will reprovision your instance and skip the steps that are already applied to your instance. If our ansible playbook is written nicely, it should be idempotent, which means the same steps should not be run over and over again. Each time we run the playbook (regardless of the state of the machine), it should produce the same results.
+
+If you want to blow up the box and start over again simply:
+
+```sh
+vagrant destroy
+vagrant up
+```
+
+### Ansible Playbook
+
+#### Basics
+
+Let's start with the first part of our ansible playbook. 
+
+```yaml
+- hosts: all
+  remote_user: root
+```
+
+In vagrant box the remote user that we want to use is "root". However for AWS EC2 deployments that user might change. For example if you create an ubuntu instance, that variable should be set to "ubuntu". This is the user which ansible uses to ssh and invoke the commands that we told it to run.
+
+The next section is where we define variables which would be used throughout our ansible playbook.
+
+```yaml
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    multinet_server_path: "{{ ansible_env.HOME }}/multinet"
+    adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
+    nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
+    arangodb_password: "letmein"
+```
+
+You might want to change the arangodb_password for the real deployment to an EC2 instance. 
+This is not the only way to specify variables though. We can overwrite, what is in the playbook with an inventory file which we will cover in the following sections.
+
+It is always a good idea to use roles. They are like npm or pip packages, but for ansible.
+
+```yaml
+  roles:
+    - role: geerlingguy.nodejs
+      become: true
+```
+
+These role names are coming from ansible galaxy. In order to use them, we specify them in our requirements.yml file. In the example above, that given role installs nodejs.
+
+We can also import other "task" files, which specifies the tasks we want to run. 
+
+```yaml
+  tasks:
+    - include_tasks: tasks/arangodb_tasks.yml
+    - include_tasks: tasks/server_tasks.yml
+    - include_tasks: tasks/client_tasks.yml
+    - include_tasks: tasks/nodelink_tasks.yml
+    - include_tasks: tasks/adjmatrix_tasks.yml
+```
+
+Each task file installs the necessary components to get multinet up and running.
+
+#### EC2 Deployment
+
+If we want to run this playbook against an EC2 instance, we need to create an inventory file. It is best not to commit the inventory file (in my opinion) since it might include secret variables such as database passwords.
+
+Here is a sample inventory file:
+
+```ini
+[all:vars]
+ansible_user=ubuntu 
+ansible_python_interpreter=/usr/bin/python3 
+arangodb_password="foobar"
+ansible_ssh_private_key_file=./mykeypair.pem
+
+[all]
+IP_OF_EC2_INSTANCE
+```
+
+First step would be installing required roles:
+```sh
+ansible-galaxy install -r requirements.yml
+```
+
+Then run the playbook against the EC2 instance in our inventory file:
+
+```sh
+ansible-playbook -i inventory playbook.yml
+```

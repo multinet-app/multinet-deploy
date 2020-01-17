@@ -1,1 +1,3 @@
-deploy.key
+.vagrant
+roles
+*.retry
