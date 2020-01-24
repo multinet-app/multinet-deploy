@@ -14,5 +14,5 @@
   args:
     chdir: "{{ adjmatrix_client_path }}"
   environment:
-    PUBLIC_PATH: "/{{adjmatrix_client_path}}/"
+    PUBLIC_PATH: "/{{adjmatrix_public_path}}/"
   when: adjmatrix_git.changed
