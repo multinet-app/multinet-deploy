@@ -8,3 +8,11 @@
   yarn:
     path: "{{ adjmatrix_client_path }}"
   when: adjmatrix_git.changed
+
+- name: Build adjmatrix app
+  command: yarn run build
+  args:
+    chdir: "{{ adjmatrix_client_path }}"
+  environment:
+    PUBLIC_PATH: "/{{adjmatrix_client_path}}/"
+  when: adjmatrix_git.changed
