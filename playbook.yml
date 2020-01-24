@@ -6,6 +6,7 @@
     ansible_python_interpreter: /usr/bin/python3
     multinet_server_path: "{{ ansible_env.HOME }}/multinet"
     adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
+    adjmatrix_public_path: "adjmatrix"
     nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
     nodelink_public_path: "nodelink"
     arangodb_password: "letmein"
@@ -54,8 +55,8 @@
               location /{{nodelink_public_path}} {
                 alias {{ nodelink_client_path }}/dist;
               }
-              location /adjmatrix {
-                alias {{ adjmatrix_client_path }}/src;
+              location /{{adjmatrix_public_path}} {
+                alias {{ adjmatrix_client_path }}/dist;
               }
               location /api {
                 include uwsgi_params;
