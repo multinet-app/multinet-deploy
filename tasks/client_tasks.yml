@@ -3,6 +3,12 @@
     path: "{{ multinet_server_path }}/client"
   when: multinet_git.changed
 
+- name: Generate git-sha file for use in client build
+  command: "git rev-parse HEAD >git-sha"
+  args:
+    chdir: "{{ multinet_server_path }}/client"
+  when: multinet_git.changed
+
 - name: Build multinet client side
   command: yarn run build
   args:
