@@ -4,7 +4,7 @@
   when: multinet_git.changed
 
 - name: Generate git-sha file for use in client build
-  command: "git rev-parse HEAD >git-sha"
+  shell: "git rev-parse HEAD >git-sha"
   args:
     chdir: "{{ multinet_server_path }}/client"
   when: multinet_git.changed
