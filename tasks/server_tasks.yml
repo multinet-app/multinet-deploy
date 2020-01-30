@@ -44,6 +44,11 @@
     dest: "{{ multinet_server_path }}/.env"
     remote_src: yes
 
+- name: Inject Sentry DSN into .env file
+  lineinfile:
+    path: "{{ multinet_server_path }}/.env"
+    line: "SENTRY_DSN=${{secrets.SENTRY_DSN}}"
+
 - name: (Re)start service (systemd)
   systemd:
     name: multinet
