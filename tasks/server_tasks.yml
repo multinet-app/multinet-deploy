@@ -47,6 +47,7 @@
 - name: Inject Sentry DSN into .env file
   lineinfile:
     path: "{{ multinet_server_path }}/.env"
+    regexp: "^SENTRY_DSN="
     line: "SENTRY_DSN=${{secrets.SENTRY_DSN}}"
 
 - name: (Re)start service (systemd)
