@@ -37,9 +37,6 @@
         state: touch
       become: true
 
-    # - name: Get ssl certs
-    #   import_tasks: "tasks/lets_encrypt.yml"
-
   roles:
     - role: geerlingguy.nodejs
       become: true
@@ -50,8 +47,8 @@
     - role: geerlingguy.nginx
       vars:
         nginx_vhosts:
-          - listen: "443 ssl http2"
-            server_name: "multinet.app"
+          - listen: "80"
+            server_name: "_"
             state: "present"
             filename: "multinet.app.conf"
             extra_parameters: |
@@ -80,19 +77,6 @@
               location / {
                 root {{ multinet_server_path }}/client/dist;
               }
-              # ssl_certificate "/etc/letsencrypt/live/multinet.app/fullchain.pem";
-              # ssl_certificate_key "/etc/letsencrypt/live/multinet.app/privkey.pem";
-              # ssl_session_cache shared:SSL:10m;
-              # ssl_session_timeout  10m;
-              # ssl_protocols TLSv1.2 TLSv1.3;
-              # ssl_prefer_server_ciphers on;
-              # ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
-          - listen: "80"
-            server_name: "multinet.app"
-            state: "present"
-            filename: "multinet80.app.conf"
-            extra_parameters: |
-              return 301 https://$host$request_uri;
       nginx_remove_default_vhost: true
       become: true
 
