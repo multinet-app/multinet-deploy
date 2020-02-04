@@ -9,6 +9,12 @@
     chdir: "{{ multinet_server_path }}/client"
   when: multinet_git.changed
 
+- name: Generate ga-tag file for use in client build
+  shell: "echo {{ ga_tag }} >ga-tag"
+  args:
+    chdir: "{{ multinet_server_path }}/client"
+  creates: "{{ multinet_server_path }}/client/ga-tag"
+
 - name: Build multinet client side
   command: yarn run build
   args:

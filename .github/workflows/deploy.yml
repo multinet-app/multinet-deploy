@@ -31,7 +31,7 @@ jobs:
         run:  touch ~/.ssh/known_hosts && ssh-keyscan ${SERVER_IP} >> ~/.ssh/known_hosts
 
       - name: Deploy to testing environment
-        run: ansible-playbook -i ${SERVER_IP}, /home/runner/work/multinet-deploy/multinet-deploy/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem" --extra-vars="cert_admin_email=${{secrets.CERT_ADMIN_EMAIL}} sentry_dsn=${{secrets.SENTRY_DSN}}"
+        run: ansible-playbook -i ${SERVER_IP}, /home/runner/work/multinet-deploy/multinet-deploy/playbook.yml --ssh-extra-args="-i ~/.ssh/testing.pem" --extra-vars="cert_admin_email=${{secrets.CERT_ADMIN_EMAIL}} sentry_dsn=${{secrets.SENTRY_DSN}} ga_tag=${{secrets.GA_TAG}}"
 
       - name: Destroy security group for this runner
         run: chmod +x /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh && AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}} AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}} AWS_INSTANCE_ID=${{secrets.AWS_INSTANCE_ID}} AWS_VPC_ID=${{secrets.AWS_VPC_ID}} AWS_DEFAULT_REGION=us-east-2  /home/runner/work/multinet-deploy/multinet-deploy/scripts/destroy_security_group.sh
