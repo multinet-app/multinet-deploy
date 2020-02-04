@@ -13,7 +13,7 @@
     lockfile_path: /tmp/ansible-playbook.lock
     force_ignore_lock: false
     # Modified for local build
-    sentry_dsn: "123456789"
+    sentry_dsn: ""
 
 
   # Abort if a lockfile is present; otherwise create the file.
