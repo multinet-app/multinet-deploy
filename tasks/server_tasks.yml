@@ -49,7 +49,7 @@
   lineinfile:
     path: "{{ multinet_server_path }}/.env"
     regexp: "^SENTRY_DSN="
-    line: "SENTRY_DSN=${{secrets.SENTRY_DSN}}"
+    line: "SENTRY_DSN={{ sentry_dsn }}"
 
 - name: (Re)start service (systemd)
   systemd:
