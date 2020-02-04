@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yml"
+    ansible.playbook = "playbook.vagrant.yml"
     ansible.galaxy_role_file = "requirements.yml"
   end
 end
