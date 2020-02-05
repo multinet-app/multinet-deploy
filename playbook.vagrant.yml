@@ -12,7 +12,6 @@
     arangodb_password: "letmein"
     lockfile_path: /tmp/ansible-playbook.lock
     force_ignore_lock: false
-    # Modified for local build
     sentry_dsn: ""
 
 
