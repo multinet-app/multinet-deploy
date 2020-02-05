@@ -1,0 +1,94 @@
+---
+- hosts: all
+  remote_user: ubuntu
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    multinet_server_path: "{{ ansible_env.HOME }}/multinet"
+    adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
+    adjmatrix_public_path: "adjmatrix"
+    nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
+    nodelink_public_path: "nodelink"
+    arangodb_password: "letmein"
+    lockfile_path: /tmp/ansible-playbook.lock
+    force_ignore_lock: false
+    sentry_dsn: ""
+
+
+  # Abort if a lockfile is present; otherwise create the file.
+  pre_tasks:
+    - stat:
+        path: "{{lockfile_path}}"
+      register: lockfile
+
+    - fail:
+        msg: "lockfile found; another ansible process might be running?"
+      when: lockfile.stat.exists|bool and not force_ignore_lock|bool
+
+    - file:
+        path: "{{lockfile_path}}"
+        state: absent
+        become: true
+      when: "{{force_ignore_lock}}"
+
+    - file:
+        path: "{{lockfile_path}}"
+        state: touch
+      become: true
+
+  roles:
+    - role: geerlingguy.nodejs
+      become: true
+    - role: oefenweb.yarn
+      become: true
+    - role: leesoh.pipenv
+      become: true
+    - role: geerlingguy.nginx
+      vars:
+        nginx_vhosts:
+          - listen: "80"
+            server_name: "_"
+            state: "present"
+            filename: "multinet.app.conf"
+            extra_parameters: |
+              location /{{nodelink_public_path}} {
+                alias {{ nodelink_client_path }}/dist;
+              }
+              location /{{adjmatrix_public_path}} {
+                alias {{ adjmatrix_client_path }}/dist;
+              }
+              location /api {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location /apidocs {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location /flasgger_static {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location /apispec_1.json {
+                include uwsgi_params;
+                uwsgi_pass unix:{{ multinet_server_path }}/multinet.sock;
+              }
+              location / {
+                root {{ multinet_server_path }}/client/dist;
+              }
+      nginx_remove_default_vhost: true
+      become: true
+
+  tasks:
+    - block:
+        - include_tasks: tasks/arangodb_tasks.yml
+        - include_tasks: tasks/server_tasks.yml
+        - include_tasks: tasks/client_tasks.yml
+        - include_tasks: tasks/nodelink_tasks.yml
+        - include_tasks: tasks/adjmatrix_tasks.yml
+      always:
+        # Remove the lockfile when finished, or on error.
+        - file:
+            path: "{{lockfile_path}}"
+            state: absent
+          become: true
