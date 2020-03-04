@@ -1,23 +1,34 @@
 - name: Install multinet client side app dependencies
   yarn:
-    path: "{{ multinet_server_path }}/client"
+    path: "{{ multinet_client_path }}"
   when: multinet_git.changed
 
-- name: Generate git-sha file for use in client build
-  shell: "git rev-parse HEAD >git-sha"
-  args:
-    chdir: "{{ multinet_server_path }}/client"
-  when: multinet_git.changed
+- name: Set up .env file
+  copy:
+    src: "{{ multinet_client_path }}/.env.default"
+    dest: "{{ multinet_client_path }}/.env"
+    remote_src: yes
 
-- name: Generate ga-tag file for use in client build
-  shell: "echo {{ ga_tag }} >ga-tag"
-  args:
-    chdir: "{{ multinet_server_path }}/client"
-    creates: "{{ multinet_server_path }}/client/ga-tag"
+- name: Inject git sha into .env file
+  lineinfile:
+    path: "{{ multinet_client_path }}/.env"
+    regexp: "^VUE_APP_GIT_SHA="
+    line: "VUE_APP_GIT_SHA=$(git rev-parse HEAD)"
+
+- name: Inject ga tag into .env file
+  lineinfile:
+    path: "{{ multinet_client_path }}/.env"
+    regexp: "^VUE_APP_GA_TAG="
+    line: "VUE_APP_GA_TAG={{ ga_tag }}"
+
+- name: Specify multinet api URL
+  lineinfile:
+    path: "{{ multinet_client_path }}/.env"
+    regexp: "^VUE_APP_MULTINET_HOST="
+    line: "VUE_APP_MULTINET_HOST=multinet.app"
 
 - name: Build multinet client side
   command: yarn run build
   args:
-    chdir: "{{ multinet_server_path }}/client"
+    chdir: "{{ multinet_client_path }}"
   when: multinet_git.changed
-
