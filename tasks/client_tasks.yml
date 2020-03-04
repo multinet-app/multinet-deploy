@@ -25,7 +25,7 @@
   lineinfile:
     path: "{{ multinet_client_path }}/.env"
     regexp: "^VUE_APP_MULTINET_HOST="
-    line: "VUE_APP_MULTINET_HOST=multinet.app"
+    line: "VUE_APP_MULTINET_HOST=https://multinet.app"
 
 - name: Build multinet client side
   command: yarn run build
