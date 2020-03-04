@@ -5,6 +5,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     multinet_server_path: "{{ ansible_env.HOME }}/multinet"
+    multinet_client_path: "{{ ansible_env.HOME }}/multinet/client"
     adjmatrix_client_path: "{{ ansible_env.HOME }}/adjmatrix"
     adjmatrix_public_path: "adjmatrix"
     nodelink_client_path: "{{ ansible_env.HOME }}/nodelink"
