@@ -9,11 +9,17 @@
     dest: "{{ multinet_client_path }}/.env"
     remote_src: yes
 
+- name: Generate git sha
+  shell: git rev-parse HEAD
+  register: git_sha
+  args:
+    chdir: "{{ multinet_client_path }}"
+
 - name: Inject git sha into .env file
   lineinfile:
     path: "{{ multinet_client_path }}/.env"
     regexp: "^VUE_APP_GIT_SHA="
-    line: "VUE_APP_GIT_SHA=$(git rev-parse HEAD)"
+    line: "VUE_APP_GIT_SHA={{ git_sha.stdout }}"
 
 - name: Inject ga tag into .env file
   lineinfile:
